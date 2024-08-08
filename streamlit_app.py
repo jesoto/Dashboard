@@ -9,6 +9,8 @@ from streamlit_folium import st_folium
 import altair as alt
 import referencing.jsonschema
 from folium import Popup
+import matplotlib.pyplot as plt
+
 
 #################################
 
@@ -113,6 +115,14 @@ idm_anual_pue = pd.read_excel('data/IDM_anual_puestos.xlsx')
 #dep = gpd.read_file('data/LIMITE_DEPARTAMENTO/LIMITE_DEP.shp')
 geo_idm = pd.read_excel('data/geo_idm_anual.xlsx')
 geo_idm['Coordenadas'] = geo_idm.apply(lambda row: (row['latitud'], row['longitud']), axis=1)
+
+
+idm_hospitales = pd.read_excel('data_lineplot_hosp.xlsx')
+idm_centros = pd.read_excel('data_lineplot_centros.xlsx')
+idm_puestos = pd.read_excel('data_lineplot_puestos.xlsx')
+
+
+
 
 #
 ## Verificar si las columnas latitud y longitud existen y tienen datos válidos
@@ -219,3 +229,15 @@ else:
 
             st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
             st_folium(m, width=600)
+            
+            st.markdown('### Lineplot')
+            plt.figure(figsize=(19,5))
+            plt.plot(idm_hospitales.date[idm_hospitales['departamento'] == selected_depart], idm_hospitales.idm[idm_hospitales['departamento'] == selected_depart], marker = 'o', label='Hospitales')
+            plt.plot(idm_puestos.date[idm_puestos['departamento'] == selected_depart], idm_puestos.idm[idm_puestos['departamento'] == selected_depart], marker = 'o', label='Puestos de salud')
+            plt.plot(idm_centros.date[idm_centros['departamento'] == selected_depart], idm_centros.idm[idm_centros['departamento'] == selected_depart], marker = 'o', label='Centros de Salud')
+
+            plt.axhspan(90, 100, facecolor='green', alpha=0.2, edgecolor='black', linewidth=1, label = "Bien")
+            plt.axhspan(70, 90, facecolor='yellow', alpha=0.2,  edgecolor='black', linewidth=1, label = "Regular")
+            plt.axhspan(50, 70, facecolor='orange', alpha=0.2, edgecolor='black', linewidth=1, label = "Mal")
+            plt.axhspan(40, 50, facecolor='red', alpha=0.2,  edgecolor='black', linewidth=1, label = "Muy mal")
+            plt.legend()
