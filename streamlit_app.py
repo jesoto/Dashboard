@@ -2,7 +2,7 @@
 # Import libraries 
 import streamlit as st 
 import pandas as pd 
-import geopandas as gpd
+#import geopandas as gpd
 import folium
 from streamlit_folium import st_folium
 import altair as alt
@@ -108,7 +108,7 @@ idm_anual_pue = pd.read_excel('data/IDM_anual_puestos.xlsx')
 # map of IDM 
 #
 
-dep = gpd.read_file('data/LIMITE_DEPARTAMENTO/LIMITE_DEP.shp')
+#dep = gpd.read_file('data/LIMITE_DEPARTAMENTO/LIMITE_DEP.shp')
 geo_idm = pd.read_excel('data/geo_idm_anual.xlsx')
 geo_idm['Coordenadas'] = geo_idm.apply(lambda row: (row['latitud'], row['longitud']), axis=1)
 
@@ -174,7 +174,7 @@ else:
 
             # Crear el mapa de Folium
             m = folium.Map(location=[-9.19, -75.0152], tiles='cartodbpositron', zoom_start=7)
-            folium.GeoJson(dep, style_function=style_function).add_to(m)
+            #folium.GeoJson(dep, style_function=style_function).add_to(m)
 
             # Crear grupos de capas para los diferentes tipos de establecimientos
             hospital_layer = folium.FeatureGroup(name="Hospital")
