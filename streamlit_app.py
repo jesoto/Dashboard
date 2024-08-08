@@ -1,9 +1,8 @@
 ##################################
 # Import libraries 
-pip install folium
 import streamlit as st 
 import pandas as pd 
-#import geopandas as gpd
+import geopandas as gpd
 import folium
 from streamlit_folium import st_folium
 import altair as alt
