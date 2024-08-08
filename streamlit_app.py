@@ -8,6 +8,7 @@ from streamlit_folium import st_folium
 import altair as alt
 import referencing.jsonschema
 from folium import Popup
+import openpyxl
 #################################
 
 st.set_page_config(
