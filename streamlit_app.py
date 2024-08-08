@@ -241,3 +241,4 @@ else:
             plt.axhspan(50, 70, facecolor='orange', alpha=0.2, edgecolor='black', linewidth=1, label = "Mal")
             plt.axhspan(40, 50, facecolor='red', alpha=0.2,  edgecolor='black', linewidth=1, label = "Muy mal")
             plt.legend()
+            st.pyplot(plt.gcf())
