@@ -117,8 +117,8 @@ geo_idm = pd.read_excel('data/geo_idm_anual.xlsx')
 geo_idm['Coordenadas'] = geo_idm.apply(lambda row: (row['latitud'], row['longitud']), axis=1)
 
 
-idm_hospitales = pd.read_excel('/data/data_lineplot_hosp.xlsx')
-idm_centros    = pd.read_excel('/data/data_lineplot_centros.xlsx')
+idm_hospitales = pd.read_excel('data/data_lineplot_hosp.xlsx')
+idm_centros    = pd.read_excel('data/data_lineplot_centros.xlsx')
 idm_puestos    = pd.read_excel('data/data_lineplot_puestos.xlsx')
 
 
