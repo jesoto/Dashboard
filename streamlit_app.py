@@ -231,7 +231,7 @@ else:
             st_folium(m, width=600)
             
             st.markdown('### Lineplot')
-            plt.figure(figsize=(19,5))
+            fig = plt.figure(figsize=(19,5))
             plt.plot(idm_hospitales.date[idm_hospitales['departamento'] == selected_depart], idm_hospitales.idm[idm_hospitales['departamento'] == selected_depart], marker = 'o', label='Hospitales')
             plt.plot(idm_puestos.date[idm_puestos['departamento'] == selected_depart], idm_puestos.idm[idm_puestos['departamento'] == selected_depart], marker = 'o', label='Puestos de salud')
             plt.plot(idm_centros.date[idm_centros['departamento'] == selected_depart], idm_centros.idm[idm_centros['departamento'] == selected_depart], marker = 'o', label='Centros de Salud')
@@ -241,4 +241,4 @@ else:
             plt.axhspan(50, 70, facecolor='orange', alpha=0.2, edgecolor='black', linewidth=1, label = "Mal")
             plt.axhspan(40, 50, facecolor='red', alpha=0.2,  edgecolor='black', linewidth=1, label = "Muy mal")
             plt.legend()
-            st.pyplot(plt.gcf())
+            st.pyplot(fig)
