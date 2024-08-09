@@ -174,10 +174,10 @@ else:
             st.write('IDM Anual Total - Hospitales')
             st.altair_chart(idm_donut_hosp_chart, use_container_width=True)
             
-            st.write('IDM Anual Total - Centros')
+            st.write('IDM Anual Total - Centros de Salud')
             st.altair_chart(idm_donut_cen_chart, use_container_width=True)
             
-            st.write('IDM Anual Total - Puestos')
+            st.write('IDM Anual Total - Puestos de Salud')
             st.altair_chart(idm_donut_pue_chart, use_container_width=True)
 
         with col[1]:
