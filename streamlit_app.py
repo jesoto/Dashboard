@@ -230,7 +230,7 @@ else:
             st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
             st_folium(m, width=600)
             
-            st.markdown('### Lineplot')
+            st.markdown('### Evolución del IDM por tipo de establecimiento')
             fig = plt.figure(figsize=(19,5))
             plt.plot(idm_hospitales.date[idm_hospitales['departamento'] == selected_depart], idm_hospitales.idm[idm_hospitales['departamento'] == selected_depart], marker = 'o', label='Hospitales')
             plt.plot(idm_puestos.date[idm_puestos['departamento'] == selected_depart], idm_puestos.idm[idm_puestos['departamento'] == selected_depart], marker = 'o', label='Puestos de salud')
