@@ -29,7 +29,7 @@ filtros = pd.read_excel('data/sidebar.xlsx')
 # Sidebar
 with st.sidebar:
     st.title('🏥💊 Disponibilidad de Medicamentos - Peru')
-    st.markdown(### Definimos )
+    st.markdown("### Definimos" )
     year_list = [2019, 2020, 2021, 2022, 2023, 2024]
     
     selected_year = st.selectbox('Selecciona un año', year_list, index=len(year_list)-1)
