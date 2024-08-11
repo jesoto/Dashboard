@@ -250,7 +250,7 @@ else:
             st.pyplot(fig)
             
 #######################################
-ranking = pd.read_excel('data/rankin_medicamentos_desabastecidos.xlsx')
+ranking = pd.read_excel('data/ranking_medicamentos_desabastecidos.xlsx')
 ranking = ranking[(ranking['departamento'] == selected_depart)&(ranking['año'] == selected_year)][['nombre_med_grupo','desabastecimientos']].head(15)
 with col[2]:
     st.markdown('### Top Medicamentos desabastecidos')
