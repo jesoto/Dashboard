@@ -7,10 +7,7 @@ import geopandas as gpd
 import folium
 from streamlit_folium import st_folium
 import altair as alt
-import referencing.jsonschema
-from folium import Popup
 import matplotlib.pyplot as plt
-
 
 #################################
 
@@ -22,8 +19,21 @@ st.set_page_config(
 )
 
 #################################
-# Loading data to create the sidebar and filters
-filtros = pd.read_excel('data/sidebar.xlsx')
+# Cache the loading of data to improve performance
+@st.cache_data
+def load_data(file_path):
+    return pd.read_excel(file_path)
+
+# Load data
+filtros = load_data('data/sidebar.xlsx')
+idm_anual_data = load_data('data/IDM_anual.xlsx')
+idm_anual_hosp = load_data('data/IDM_anual_hospitales.xlsx')
+idm_anual_cen = load_data('data/IDM_anual_centros.xlsx')
+idm_anual_pue = load_data('data/IDM_anual_puestos.xlsx')
+geo_idm = load_data('data/geo_idm_anual.xlsx')
+idm_hospitales = load_data('data/data_lineplot_hosp.xlsx')
+idm_centros = load_data('data/data_lineplot_centros.xlsx')
+idm_puestos = load_data('data/data_lineplot_puestos.xlsx')
 
 ################################
 # Sidebar
@@ -98,7 +108,7 @@ def make_donut(idm_value, departamento):
     return plot_bg + plot + text
 
 # Calculation IDM by year and department
-
+@st.cache_data
 def calculate_idm_by_depart_year(input_df, input_year, input_depart):
     selected_IDM_depart_year = input_df[(input_df['departamento'] == input_depart) & (input_df['año'] == input_year)]['IDM'].round(0).values
     if len(selected_IDM_depart_year) > 0:
@@ -107,41 +117,6 @@ def calculate_idm_by_depart_year(input_df, input_year, input_depart):
         return None
 ###################################
 
-# Loading all the data
-
-#IDM col 0
-idm_anual_data = pd.read_excel('data/IDM_anual.xlsx')
-idm_anual_hosp = pd.read_excel('data/IDM_anual_hospitales.xlsx')
-idm_anual_cen = pd.read_excel('data/IDM_anual_centros.xlsx')
-idm_anual_pue = pd.read_excel('data/IDM_anual_puestos.xlsx')
-
-# map of IDM 
-#
-
-#dep = gpd.read_file('data/LIMITE_DEPARTAMENTO/LIMITE_DEP.shp')
-geo_idm = pd.read_excel('data/geo_idm_anual.xlsx')
-geo_idm['Coordenadas'] = geo_idm.apply(lambda row: (row['latitud'], row['longitud']), axis=1)
-
-
-idm_hospitales = pd.read_excel('data/data_lineplot_hosp.xlsx')
-idm_centros    = pd.read_excel('data/data_lineplot_centros.xlsx')
-idm_puestos    = pd.read_excel('data/data_lineplot_puestos.xlsx')
-
-
-
-
-#
-## Verificar si las columnas latitud y longitud existen y tienen datos válidos
-#if 'latitud' not in geo_idm.columns or 'longitud' not in geo_idm.columns:
-#    st.error("Las columnas 'latitud' y 'longitud' no existen en el DataFrame.")
-#else:
-#    if geo_idm[['latitud', 'longitud']].isnull().any().any():
-#        st.error("Hay valores nulos en las columnas 'latitud' y 'longitud'.")
-#    else:
-#        ####################################
-#        # Dashboard Main Panel
-#        col = st.columns((1.5, 4.5, 2), gap='medium')
-#
 col = st.columns((1.5, 4, 2.5), gap='medium')
 
 def style_function(feature):
@@ -192,7 +167,6 @@ else:
 
             # Crear el mapa de Folium
             m = folium.Map(location=[-9.19, -75.0152], tiles='cartodbpositron', zoom_start=7)
-            #folium.GeoJson(dep, style_function=style_function).add_to(m)
 
             # Crear grupos de capas para los diferentes tipos de establecimientos
             hospital_layer = folium.FeatureGroup(name="Hospital")
@@ -221,49 +195,4 @@ else:
                     marker.add_to(hospital_layer)
                 elif tipo_establecimiento == "Centro de salud":
                     marker.add_to(centro_layer)
-                elif tipo_establecimiento == "Puesto de Salud":
-                    marker.add_to(puesto_layer)
-                else:
-                    marker.add_to(otro_layer)
-
-            hospital_layer.add_to(m)
-            centro_layer.add_to(m)
-            puesto_layer.add_to(m)
-            otro_layer.add_to(m)
-
-            folium.LayerControl().add_to(m)
-
-            st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
-            st_folium(m, width=600)
-            
-            st.markdown('### Evolución del IDM por tipo de establecimiento')
-            fig = plt.figure(figsize=(19,5))
-            plt.plot(idm_hospitales.date[idm_hospitales['departamento'] == selected_depart], idm_hospitales.idm[idm_hospitales['departamento'] == selected_depart], marker = 'o', label='Hospitales')
-            plt.plot(idm_puestos.date[idm_puestos['departamento'] == selected_depart], idm_puestos.idm[idm_puestos['departamento'] == selected_depart], marker = 'o', label='Puestos de salud')
-            plt.plot(idm_centros.date[idm_centros['departamento'] == selected_depart], idm_centros.idm[idm_centros['departamento'] == selected_depart], marker = 'o', label='Centros de Salud')
-
-            plt.axhspan(90, 100, facecolor='green', alpha=0.2, edgecolor='black', linewidth=1, label = "Bien")
-            plt.axhspan(70, 90, facecolor='yellow', alpha=0.2,  edgecolor='black', linewidth=1, label = "Regular")
-            plt.axhspan(50, 70, facecolor='orange', alpha=0.2, edgecolor='black', linewidth=1, label = "Mal")
-            plt.axhspan(40, 50, facecolor='red', alpha=0.2,  edgecolor='black', linewidth=1, label = "Muy mal")
-            plt.legend()
-            st.pyplot(fig)
-            
-#######################################
-ranking = pd.read_excel('data/ranking_medicamentos_desabastecidos.xlsx')
-ranking = ranking[(ranking['departamento'] == selected_depart)&(ranking['año'] == selected_year)][['nombre_med_grupo','desabastecimientos']].head(15)
-with col[2]:
-    st.markdown('### Top Medicamentos desabastecidos')
-    
-    st.dataframe(ranking,
-                 column_order=('nombre_med_grupo','desabastecimientos'),
-                 hide_index=True,
-                 width=None,
-                 column_config={
-                     'nombre_med_grupo' : st.column_config.TextColumn('nombre_med_grupo'),
-                     'desabastecimientos':st.column_config.ProgressColumn(
-                         "desabastecimientos",
-                         format="%f",
-                         min_value=0,
-                         
-                     )})
+                elif tipo_establecimiento == "Puesto de Salud
