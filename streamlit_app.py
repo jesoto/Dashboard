@@ -142,7 +142,7 @@ idm_puestos    = pd.read_excel('data/data_lineplot_puestos.xlsx')
 #        # Dashboard Main Panel
 #        col = st.columns((1.5, 4.5, 2), gap='medium')
 #
-col = st.columns((1.5, 4.5, 2), gap='medium')
+col = st.columns((1.5, 4, 2.5), gap='medium')
 
 def style_function(feature):
     return {
