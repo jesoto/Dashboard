@@ -169,50 +169,108 @@ else:
             filtered_data = geo_idm[(geo_idm['año'] == selected_year) & (geo_idm['departamento'] == selected_depart)]
 
             # Crear el mapa de Folium
-            m = folium.Map(location=[-9.19, -75.0152], tiles='cartodbpositron', zoom_start=7)
+             # Crear el mapa de Plotly
+            fig = go.Figure()
 
-            # Crear grupos de capas para los diferentes tipos de establecimientos
-            hospital_layer = folium.FeatureGroup(name="Hospital")
-            centro_layer = folium.FeatureGroup(name="Centro de salud")
-            puesto_layer = folium.FeatureGroup(name="Puesto de Salud")
-            otro_layer = folium.FeatureGroup(name="Otro")
+            for tipo in ['Hospital', 'Centro de salud', 'Puesto de Salud', 'Otro']:
+                df_tipo = filtered_data[filtered_data['tipo'] == tipo]
+                fig.add_trace(go.Scattermapbox(
+                    lat=df_tipo['latitud'],
+                    lon=df_tipo['longitud'],
+                    mode='markers',
+                    marker=go.scattermapbox.Marker(size=9),
+                    text=df_tipo['establec'],  # Información mostrada al pasar el mouse
+                    name=tipo
+                ))
 
-            for idx, row in filtered_data.iterrows():
-                nombre = row['establec']
-                tipo_establecimiento = row['tipo']
-                disponibilidad = row['dispo']
-                lat = row['latitud']
-                lon = row['longitud']
-
-                # Crear contenido HTML para el popup
-                popup_content = f"""
-                <b>Nombre:</b> {nombre}<br>
-                <b>Tipo de Establecimiento:</b> {tipo_establecimiento}<br>
-                <b>Disponibilidad:</b> {disponibilidad}%
-                """
-                popup = folium.Popup(popup_content, max_width=300)
-
-                marker = folium.Circle(location=[lat, lon], radius=5, popup=popup, fill=True)
-
-                if tipo_establecimiento == "Hospital":
-                    marker.add_to(hospital_layer)
-                elif tipo_establecimiento == "Centro de salud":
-                    marker.add_to(centro_layer)
-                elif tipo_establecimiento == "Puesto de Salud":
-                    marker.add_to(puesto_layer)
-                else:
-                    marker.add_to(otro_layer)
-
-            hospital_layer.add_to(m)
-            centro_layer.add_to(m)
-            puesto_layer.add_to(m)
-            otro_layer.add_to(m)
-
-            folium.LayerControl().add_to(m)
+            fig.update_layout(
+                mapbox_style="carto-positron",
+                mapbox=dict(
+                    center=go.layout.mapbox.Center(
+                        lat=-9.19,
+                        lon=-75.0152
+                    ),
+                    zoom=7
+                ),
+                margin={"r":0,"t":0,"l":0,"b":0}
+            )
 
             st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
-            st_folium(m, width=600, height=200)
+            st.plotly_chart(fig, use_container_width=True)
             
+            st.markdown('### Evolución del IDM por tipo de establecimiento')
+            fig_line = px.line(idm_hospitales[idm_hospitales['departamento'] == selected_depart], x='date', y='idm', title='Evolución del IDM en Hospitales', markers=True, labels={'idm':'IDM', 'date':'Fecha'})
+            fig_line.add_scatter(x=idm_puestos['date'], y=idm_puestos['idm'], mode='lines+markers', name='Puestos de Salud')
+            fig_line.add_scatter(x=idm_centros['date'], y=idm_centros['idm'], mode='lines+markers', name='Centros de Salud')
+
+            fig_line.update_layout(
+                yaxis=dict(title='IDM'),
+                xaxis=dict(title='Fecha'),
+                legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5),
+                shapes=[
+                    dict(
+                        type="rect",
+                        xref="paper",
+                        yref="y",
+                        x0=0,
+                        y0=90,
+                        x1=1,
+                        y1=100,
+                        fillcolor="green",
+                        opacity=0.2,
+                        layer="below",
+                        line_width=0,
+                    ),
+                                        dict(
+                        type="rect",
+                        xref="paper",
+                        yref="y",
+                        x0=0,
+                        y0=70,
+                        x1=1,
+                        y1=90,
+                        fillcolor="yellow",
+                        opacity=0.2,
+                        layer="below",
+                        line_width=0,
+                    ),
+                    dict(
+                        type="rect",
+                        xref="paper",
+                        yref="y",
+                        x0=0,
+                        y0=50,
+                        x1=1,
+                        y1=70,
+                        fillcolor="orange",
+                        opacity=0.2,
+                        layer="below",
+                        line_width=0,
+                    ),
+                    dict(
+                        type="rect",
+                        xref="paper",
+                        yref="y",
+                        x0=0,
+                        y0=40,
+                        x1=1,
+                        y1=50,
+                        fillcolor="red",
+                        opacity=0.2,
+                        layer="below",
+                        line_width=0,
+                    ),
+                ]
+            )
+
+            st.plotly_chart(fig_line, use_container_width=True)
+                    
+                    
+                    
+                    
+                    
+                    
+                    
             st.markdown('### Evolución del IDM por tipo de establecimiento')
             df_lineplot = pd.concat([
                 idm_hospitales[idm_hospitales['departamento'] == selected_depart].assign(tipo='Hospitales'),
