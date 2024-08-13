@@ -196,7 +196,7 @@ else:
             legend=dict(
                 orientation="h",
                 yanchor="top",
-                y=-0.1,  # Ajusta la posición vertical de la leyenda
+                y=-0.05,  # Ajusta la posición vertical de la leyenda
                 xanchor="center",
                 x=0.5
                 ))
