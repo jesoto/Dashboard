@@ -164,13 +164,19 @@ else:
             st.write('IDM Anual - Puestos de Salud')
             st.altair_chart(idm_donut_pue_chart, use_container_width=True)
 
-        with col[1]:
-            # Filtrar datos según el año y el departamento seleccionados
-            filtered_data = geo_idm[(geo_idm['año'] == selected_year) & (geo_idm['departamento'] == selected_depart)]
-        
+    with col[1]:
+        # Filtrar datos según el año y el departamento seleccionados
+        filtered_data = geo_idm[(geo_idm['año'] == selected_year) & (geo_idm['departamento'] == selected_depart)]
+    
+        # Verificar si hay datos para el departamento seleccionado
+        if not filtered_data.empty:
+            # Obtener la primera coordenada del dataframe filtrado
+            initial_lat = filtered_data.iloc[0]['latitud']
+            initial_lon = filtered_data.iloc[0]['longitud']
+    
             # Crear el mapa de Plotly
             fig = go.Figure()
-        
+    
             for tipo in ['Hospital', 'Centro de salud', 'Puesto de Salud', 'Otro']:
                 df_tipo = filtered_data[filtered_data['tipo'] == tipo]
                 fig.add_trace(go.Scattermapbox(
@@ -178,26 +184,59 @@ else:
                     lon=df_tipo['longitud'],
                     mode='markers',
                     marker=go.scattermapbox.Marker(size=9),
-                    text=df_tipo.apply(lambda row: f"Nombre: {row['establec']}<br>IDM: {row['dispo']}%<br>Tipo: {row['tipo']}", axis=1),  # Popup content
-                    hoverinfo='text',
+                    text=df_tipo['establec'],  # Información mostrada al pasar el mouse
                     name=tipo
                 ))
-        
+    
             fig.update_layout(
                 mapbox_style="carto-positron",
                 mapbox=dict(
                     center=go.layout.mapbox.Center(
-                        lat=-9.19,
-                        lon=-75.0152
+                        lat=initial_lat,
+                        lon=initial_lon
                     ),
                     zoom=7
                 ),
                 margin={"r":0,"t":0,"l":0,"b":0}
             )
-        
+    
             st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
             st.plotly_chart(fig, use_container_width=True)
+    
+            st.markdown('### Evolución del IDM por tipo de establecimiento')
+            df_lineplot = pd.concat([
+                idm_hospitales[idm_hospitales['departamento'] == selected_depart].assign(tipo='Hospitales'),
+                idm_centros[idm_centros['departamento'] == selected_depart].assign(tipo='Centros de Salud'),
+                idm_puestos[idm_puestos['departamento'] == selected_depart].assign(tipo='Puestos de Salud')
+            ])
             
+            # Crear el line plot usando plotly
+            fig = px.line(
+                df_lineplot,
+                x="date", y="idm",
+                color="tipo",
+                labels={"idm": "IDM", "date": "Fecha"}
+            )
+    
+            # Añadir las líneas horizontales de colores
+            fig.add_hrect(y0=90, y1=100, line_width=0, fillcolor="green", opacity=0.2, annotation_text="Bien", annotation_position="top left")
+            fig.add_hrect(y0=70, y1=90, line_width=0, fillcolor="yellow", opacity=0.2, annotation_text="Regular", annotation_position="top left")
+            fig.add_hrect(y0=50, y1=70, line_width=0, fillcolor="orange", opacity=0.2, annotation_text="Mal", annotation_position="top left")
+            fig.add_hrect(y0=35, y1=50, line_width=0, fillcolor="red", opacity=0.2, annotation_text="Muy mal", annotation_position="top left")
+    
+            # Mover la leyenda a la parte inferior
+            fig.update_layout(
+                legend_title_text='Tipo de Establecimiento',
+                legend=dict(
+                    orientation="h",
+                    yanchor="top",
+                    y=-0.2,  # Ajusta la posición vertical de la leyenda
+                    xanchor="center",
+                    x=0.5
+                )
+            )
+    
+            st.plotly_chart(fig, use_container_width=True)
 
                     
             st.markdown('### Evolución del IDM por tipo de establecimiento')
