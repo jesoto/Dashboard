@@ -56,7 +56,7 @@ with st.sidebar:
        'PASCO', 'LORETO', 'MOQUEGUA', 'MADREDEDIOS', 'LIMA', 'LALIBERTAD',
        'JUNIN', 'LAMBAYEQUE']
     
-    selected_depart = st.selectbox('Selecciona el departamento', depart_list.sort())
+    selected_depart = st.selectbox('Selecciona el departamento', depart_list)
 
 #################################
 
