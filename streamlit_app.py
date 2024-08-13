@@ -232,7 +232,7 @@ else:
             fig.add_hrect(y0=90, y1=100, line_width=0, fillcolor="green", opacity=0.2, annotation_text="Bien", annotation_position="top left")
             fig.add_hrect(y0=70, y1=90, line_width=0, fillcolor="yellow", opacity=0.2, annotation_text="Regular", annotation_position="top left")
             fig.add_hrect(y0=50, y1=70, line_width=0, fillcolor="orange", opacity=0.2, annotation_text="Mal", annotation_position="top left")
-            fig.add_hrect(y0=30, y1=50, line_width=0, fillcolor="red", opacity=0.2, annotation_text="Muy mal", annotation_position="top left")
+            fig.add_hrect(y0=35, y1=50, line_width=0, fillcolor="red", opacity=0.2, annotation_text="Muy mal", annotation_position="top left")
 
             # Mover la leyenda a la parte inferior
             fig.update_layout(
