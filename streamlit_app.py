@@ -213,18 +213,31 @@ else:
             st_folium(m, width=600)
             
             st.markdown('### Evolución del IDM por tipo de establecimiento')
-            fig = plt.figure(figsize=(19,5))
-            plt.plot(idm_hospitales.date[idm_hospitales['departamento'] == selected_depart], idm_hospitales.idm[idm_hospitales['departamento'] == selected_depart], marker = 'o', label='Hospitales')
-            plt.plot(idm_puestos.date[idm_puestos['departamento'] == selected_depart], idm_puestos.idm[idm_puestos['departamento'] == selected_depart], marker = 'o', label='Puestos de salud')
-            plt.plot(idm_centros.date[idm_centros['departamento'] == selected_depart], idm_centros.idm[idm_centros['departamento'] == selected_depart], marker = 'o', label='Centros de Salud')
-
-            plt.axhspan(90, 100, facecolor='green', alpha=0.2, edgecolor='black', linewidth=1, label = "Bien")
-            plt.axhspan(70, 90, facecolor='yellow', alpha=0.2,  edgecolor='black', linewidth=1, label = "Regular")
-            plt.axhspan(50, 70, facecolor='orange', alpha=0.2, edgecolor='black', linewidth=1, label = "Mal")
-            plt.axhspan(30, 50, facecolor='red', alpha=0.2,  edgecolor='black', linewidth=1, label = "Muy mal")
-            plt.legend()
-            st.pyplot(fig)
+            df_lineplot = pd.concat([
+                idm_hospitales[idm_hospitales['departamento'] == selected_depart].assign(tipo='Hospitales'),
+                idm_centros[idm_centros['departamento'] == selected_depart].assign(tipo='Centros de Salud'),
+                idm_puestos[idm_puestos['departamento'] == selected_depart].assign(tipo='Puestos de Salud')
+            ])
             
+            # Crear el line plot usando plotly
+            fig = px.line(
+                df_lineplot,
+                x="date", y="idm",
+                color="tipo",
+                labels={"idm": "IDM", "date": "Fecha"},
+                title="Evolución del IDM por tipo de establecimiento"
+            )
+            
+            # Añadir las líneas horizontales de colores
+            fig.add_hrect(y0=90, y1=100, line_width=0, fillcolor="green", opacity=0.2, annotation_text="Bien", annotation_position="top left")
+            fig.add_hrect(y0=70, y1=90, line_width=0, fillcolor="yellow", opacity=0.2, annotation_text="Regular", annotation_position="top left")
+            fig.add_hrect(y0=50, y1=70, line_width=0, fillcolor="orange", opacity=0.2, annotation_text="Mal", annotation_position="top left")
+            fig.add_hrect(y0=40, y1=50, line_width=0, fillcolor="red", opacity=0.2, annotation_text="Muy mal", annotation_position="top left")
+            
+            fig.update_layout(legend_title_text='Tipo de Establecimiento')
+
+            st.plotly_chart(fig, use_container_width=True)
+
 #######################################
 ranking = pd.read_excel('data/ranking_medicamentos_desabastecidos.xlsx')
 ranking = ranking[(ranking['departamento'] == selected_depart)&(ranking['año'] == selected_year)][['nombre_med_grupo','desabastecimientos']].head(15)
