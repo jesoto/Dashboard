@@ -40,8 +40,7 @@ ranking = load_data('data/ranking_medicamentos_desabastecidos.xlsx', columns=['d
 
 ################################
 # Sidebar
-st_navbar(["Home", "Documentation", "Examples", "Community", "About"])
-with st.sidebar:
+with st.navbar:
     st.title('🏥💊 Disponibilidad de Medicamentos - Peru')
     with st.expander('¿Qué es el IDM?', expanded=True):
         st.write('''
