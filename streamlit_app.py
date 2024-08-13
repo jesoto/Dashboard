@@ -285,10 +285,5 @@ with col[2]:
                  hide_index=True,
                  width=None,
                  column_config={
-                     'nombre_med_grupo' : st.column_config.TextColumn('nombre_med_grupo'),
-                     'desabastecimientos':st.column_config.ProgressColumn(
-                         "desabastecimientos",
-                         format="%f",
-                         min_value=0,
-                         
-                     )})
+                     'nombre_med_grupo' : st.column_config.TextColumn('nombre_med_grupo')
+                     })
