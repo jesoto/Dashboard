@@ -235,8 +235,18 @@ else:
             fig.add_hrect(y0=50, y1=70, line_width=0, fillcolor="orange", opacity=0.2, annotation_text="Mal", annotation_position="top left")
             fig.add_hrect(y0=40, y1=50, line_width=0, fillcolor="red", opacity=0.2, annotation_text="Muy mal", annotation_position="top left")
             
-            fig.update_layout(legend_title_text='Tipo de Establecimiento')
-
+            # Mover la leyenda a la parte inferior
+            fig.update_layout(
+                legend_title_text='Tipo de Establecimiento',
+                legend=dict(
+                    orientation="h",
+                    yanchor="top",
+                    y=-0.2,  # Ajusta la posición vertical de la leyenda
+                    xanchor="center",
+                    x=0.5
+                )
+            )
+            
             st.plotly_chart(fig, use_container_width=True)
 
 #######################################
