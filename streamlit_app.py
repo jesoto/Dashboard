@@ -35,6 +35,7 @@ geo_idm = load_data('data/geo_idm_anual.xlsx')
 idm_hospitales = load_data('data/data_lineplot_hosp.xlsx')
 idm_centros = load_data('data/data_lineplot_centros.xlsx')
 idm_puestos = load_data('data/data_lineplot_puestos.xlsx')
+ranking = pd.read_excel('data/ranking_medicamentos_desabastecidos.xlsx')
 
 ################################
 # Sidebar
@@ -276,15 +277,15 @@ else:
             st.plotly_chart(fig, use_container_width=True)
 
 #######################################
-ranking = pd.read_excel('data/ranking_medicamentos_desabastecidos.xlsx')
-ranking = ranking[(ranking['departamento'] == selected_depart)&(ranking['año'] == selected_year)][['nombre_med_grupo','desabastecimientos']].head(15)
+
+ranking = ranking[(ranking['departamento'] == selected_depart) & (ranking['año'] == selected_year)][['nombre_med_grupo']].head(15)
+
 with col[2]:
     st.markdown('### Top Medicamentos desabastecidos')
     
     st.dataframe(ranking,
-                 column_order=('nombre_med_grupo','desabastecimientos'),
                  hide_index=True,
                  width=None,
                  column_config={
-                     'nombre_med_grupo' : st.column_config.TextColumn('nombre_med_grupo')
-                     })
+                     'nombre_med_grupo': st.column_config.TextColumn('nombre_med_grupo')
+                 })
