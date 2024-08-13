@@ -8,8 +8,8 @@ import folium
 from streamlit_folium import st_folium
 import altair as alt
 import matplotlib.pyplot as plt
+import plotly.graph_objects as go
 import plotly.express as px
-
 #################################
 
 st.set_page_config(
