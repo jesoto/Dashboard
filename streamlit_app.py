@@ -191,8 +191,15 @@ else:
                         ),
                         zoom=6.5
                     ),
-                    margin={"r":0,"t":0,"l":0,"b":0}
-                )
+                    margin={"r":0,"t":0,"l":0,"b":0},
+                    legend_title_text='Tipo de Establecimiento',
+            legend=dict(
+                orientation="h",
+                yanchor="top",
+                y=-0.2,  # Ajusta la posición vertical de la leyenda
+                xanchor="center",
+                x=0.5
+                ))
         
                 st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
                 st.plotly_chart(fig, use_container_width=True)
