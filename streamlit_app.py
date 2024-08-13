@@ -42,7 +42,7 @@ ranking = load_data('data/ranking_medicamentos_desabastecidos.xlsx', columns=['d
 # Sidebar
 
 with st.container():
-    col1, col2 = st.columns([3, 7])
+    col1, col2, col3= st.columns([3, 4,3])
 
     with col1:
         st.title('🏥💊 Disponibilidad de Medicamentos - Peru')
@@ -56,13 +56,13 @@ with st.container():
             IDM = \frac{\text{N\degree de medicamentos disponibles}}{\text{N\degree total de medicamentos requeridos}} \times 100
             ''')
     
-    col3, col4 = st.columns([3, 7])
+    #col3, col4 = st.columns([3, 7])
     
     with col3:
         year_list = [2019, 2020, 2021, 2022, 2023, 2024]
         selected_year = st.selectbox('Selecciona un año', year_list, index=len(year_list)-1)
     
-    with col4:
+    with col3:
         depart_list = sorted([
             'AMAZONAS', 'CAJAMARCA', 'AREQUIPA', 'AYACUCHO', 'APURIMAC',
             'ANCASH', 'HUANUCO', 'ICA', 'HUANCAVELICA', 'CUSCO', 'CALLAO',
