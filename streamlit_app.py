@@ -184,7 +184,7 @@ else:
                     lon=df_tipo['longitud'],
                     mode='markers',
                     marker=go.scattermapbox.Marker(size=9),
-                    text=text=df_tipo.apply(lambda row: f"Nombre: {row['establec']}<br>IDM: {row['dispo']}%<br>Tipo: {row['tipo']}", axis=1),  # Popup content  # Información mostrada al pasar el mouse
+                    text=df_tipo.apply(lambda row: f"Nombre: {row['establec']}<br>IDM: {row['dispo']}%<br>Tipo: {row['tipo']}", axis=1),  # Popup content  # Información mostrada al pasar el mouse
                     hoverinfo='text',
                     name=tipo
                 ))
