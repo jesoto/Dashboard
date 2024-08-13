@@ -221,7 +221,7 @@ else:
             plt.axhspan(90, 100, facecolor='green', alpha=0.2, edgecolor='black', linewidth=1, label = "Bien")
             plt.axhspan(70, 90, facecolor='yellow', alpha=0.2,  edgecolor='black', linewidth=1, label = "Regular")
             plt.axhspan(50, 70, facecolor='orange', alpha=0.2, edgecolor='black', linewidth=1, label = "Mal")
-            plt.axhspan(40, 50, facecolor='red', alpha=0.2,  edgecolor='black', linewidth=1, label = "Muy mal")
+            plt.axhspan(30, 50, facecolor='red', alpha=0.2,  edgecolor='black', linewidth=1, label = "Muy mal")
             plt.legend()
             st.pyplot(fig)
             
