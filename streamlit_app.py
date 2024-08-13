@@ -10,6 +10,7 @@ import altair as alt
 import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.express as px
+from streamlit_navigation_bar import st_navbar
 #################################
 
 st.set_page_config(
@@ -39,6 +40,7 @@ ranking = load_data('data/ranking_medicamentos_desabastecidos.xlsx', columns=['d
 
 ################################
 # Sidebar
+st_navbar(["Home", "Documentation", "Examples", "Community", "About"])
 with st.sidebar:
     st.title('🏥💊 Disponibilidad de Medicamentos - Peru')
     with st.expander('¿Qué es el IDM?', expanded=True):
