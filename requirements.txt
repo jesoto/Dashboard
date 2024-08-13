@@ -10,3 +10,4 @@ wheel
 Cython
 numpy
 matplotlib
+plotly
