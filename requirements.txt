@@ -11,3 +11,4 @@ Cython
 numpy
 matplotlib
 plotly
+streamlit-navigation-bar
