@@ -3,11 +3,6 @@
 import openpyxl
 import streamlit as st 
 import pandas as pd 
-import geopandas as gpd
-import folium
-from streamlit_folium import st_folium
-import altair as alt
-import matplotlib.pyplot as plt
 import plotly.graph_objects as go
 import plotly.express as px
 #################################
@@ -22,8 +17,8 @@ st.set_page_config(
 #################################
 # Cache the loading of data to improve performance
 @st.cache_data
-def load_data(file_path):
-    return pd.read_excel(file_path)
+def load_data(file_path, columns=None):
+    return pd.read_excel(file_path, usecols=columns)
 
 # Load data
 filtros = load_data('data/sidebar.xlsx')
@@ -35,7 +30,7 @@ geo_idm = load_data('data/geo_idm_anual.xlsx')
 idm_hospitales = load_data('data/data_lineplot_hosp.xlsx')
 idm_centros = load_data('data/data_lineplot_centros.xlsx')
 idm_puestos = load_data('data/data_lineplot_puestos.xlsx')
-ranking = pd.read_excel('data/ranking_medicamentos_desabastecidos.xlsx')
+ranking = load_data('data/ranking_medicamentos_desabastecidos.xlsx', columns=['departamento', 'año', 'nombre_med_grupo'])
 
 ################################
 # Sidebar
@@ -87,29 +82,9 @@ def make_donut(idm_value, departamento):
         "% value": [100, 0]
     })
     
-    plot = alt.Chart(source).mark_arc(innerRadius=45, cornerRadius=25).encode(
-        theta=alt.Theta("% value", type="quantitative"),
-        color=alt.Color("Topic:N",
-                        scale=alt.Scale(
-                            domain=[departamento, ''],
-                            range=chart_color),
-                        legend=None),
-    ).properties(width=130, height=130)
-    
-    text = plot.mark_text(align='center', color=chart_color[0], font="Lato", fontSize=32, fontWeight=700, fontStyle="italic").encode(
-        text=alt.value(f'{idm_value} %')
-    )
-    
-    plot_bg = alt.Chart(source_bg).mark_arc(innerRadius=45, cornerRadius=20).encode(
-        theta=alt.Theta("% value", type="quantitative"),
-        color=alt.Color("Topic:N",
-                        scale=alt.Scale(
-                            domain=[departamento, ''],
-                            range=chart_color),
-                        legend=None),
-    ).properties(width=130, height=130)
-    
-    return plot_bg + plot + text
+    plot = go.Figure(data=[go.Pie(labels=source["Topic"], values=source["% value"], hole=.6)])
+    plot.update_traces(marker=dict(colors=chart_color))
+    return plot
 
 # Calculation IDM by year and department
 @st.cache_data
@@ -123,13 +98,6 @@ def calculate_idm_by_depart_year(input_df, input_year, input_depart):
 
 col = st.columns((1.5, 4, 2.5), gap='medium')
 
-def style_function(feature):
-    return {
-        'fillOpacity': 0,      # Hacer la capa de relleno transparente
-        'color': 'black',      # Color de la línea
-        'weight': 1            # Grosor de la línea
-    }
-
 if 'latitud' not in geo_idm.columns or 'longitud' not in geo_idm.columns:
     st.error("Las columnas 'latitud' y 'longitud' no existen en el DataFrame.")
 else:
@@ -138,7 +106,7 @@ else:
     else:
         ####################################
         # Dashboard Main Panel
-        col = st.columns((1.5, 4, 2.5), gap='medium')
+        col = st.columns((1.5, 4.5, 2), gap='medium')
 
         with col[0]:
             st.markdown('#### IDM Anual Departamental')
@@ -154,93 +122,91 @@ else:
             idm_donut_pue_chart = make_donut(IDM_anual_pue, selected_depart)
             
             st.write('IDM Anual')
-            st.altair_chart(idm_donut_total_chart, use_container_width=True)
+            st.plotly_chart(idm_donut_total_chart, use_container_width=True)
             
             st.write('IDM Anual - Hospitales')
-            st.altair_chart(idm_donut_hosp_chart, use_container_width=True)
+            st.plotly_chart(idm_donut_hosp_chart, use_container_width=True)
             
             st.write('IDM Anual - Centros de Salud')
-            st.altair_chart(idm_donut_cen_chart, use_container_width=True)
+            st.plotly_chart(idm_donut_cen_chart, use_container_width=True)
             
             st.write('IDM Anual - Puestos de Salud')
-            st.altair_chart(idm_donut_pue_chart, use_container_width=True)
+            st.plotly_chart(idm_donut_pue_chart, use_container_width=True)
 
-    with col[1]:
-        # Filtrar datos según el año y el departamento seleccionados
-        filtered_data = geo_idm[(geo_idm['año'] == selected_year) & (geo_idm['departamento'] == selected_depart)]
-    
-        # Verificar si hay datos para el departamento seleccionado
-        if not filtered_data.empty:
-            # Obtener la primera coordenada del dataframe filtrado
-            initial_lat = filtered_data.iloc[0]['latitud']
-            initial_lon = filtered_data.iloc[0]['longitud']
-    
-            # Crear el mapa de Plotly
-            fig = go.Figure()
-    
-            for tipo in ['Hospital', 'Centro de salud', 'Puesto de Salud', 'Otro']:
-                df_tipo = filtered_data[filtered_data['tipo'] == tipo]
-                fig.add_trace(go.Scattermapbox(
-                    lat=df_tipo['latitud'],
-                    lon=df_tipo['longitud'],
-                    mode='markers',
-                    marker=go.scattermapbox.Marker(size=9),
-                    text=df_tipo.apply(lambda row: f"Nombre: {row['establec']}<br>IDM: {row['dispo']}%<br>Tipo: {row['tipo']}", axis=1),  # Popup content  # Información mostrada al pasar el mouse
-                    hoverinfo='text',
-                    name=tipo
-                ))
-    
-            fig.update_layout(
-                mapbox_style="carto-positron",
-                mapbox=dict(
-                    center=go.layout.mapbox.Center(
-                        lat=initial_lat,
-                        lon=initial_lon
+        with col[1]:
+            # Filtrar datos según el año y el departamento seleccionados
+            filtered_data = geo_idm[(geo_idm['año'] == selected_year) & (geo_idm['departamento'] == selected_depart)]
+        
+            # Verificar si hay datos para el departamento seleccionado
+            if not filtered_data.empty:
+                # Obtener la primera coordenada del dataframe filtrado
+                initial_lat = filtered_data.iloc[0]['latitud']
+                initial_lon = filtered_data.iloc[0]['longitud']
+        
+                # Crear el mapa de Plotly
+                fig = go.Figure()
+        
+                for tipo in ['Hospital', 'Centro de salud', 'Puesto de Salud', 'Otro']:
+                    df_tipo = filtered_data[filtered_data['tipo'] == tipo]
+                    fig.add_trace(go.Scattermapbox(
+                        lat=df_tipo['latitud'],
+                        lon=df_tipo['longitud'],
+                        mode='markers',
+                        marker=go.scattermapbox.Marker(size=9),
+                        text=df_tipo.apply(lambda row: f"Nombre: {row['establec']}<br>IDM: {row['dispo']}%<br>Tipo: {row['tipo']}", axis=1),  # Popup content
+                        hoverinfo='text',
+                        name=tipo
+                    ))
+        
+                fig.update_layout(
+                    mapbox_style="carto-positron",
+                    mapbox=dict(
+                        center=go.layout.mapbox.Center(
+                            lat=initial_lat,
+                            lon=initial_lon
+                        ),
+                        zoom=7
                     ),
-                    zoom=7
-                ),
-                margin={"r":0,"t":0,"l":0,"b":0}
-            )
-    
-            st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
-            st.plotly_chart(fig, use_container_width=True)
-    
-            st.markdown('### Evolución del IDM por tipo de establecimiento')
-            df_lineplot = pd.concat([
-                idm_hospitales[idm_hospitales['departamento'] == selected_depart].assign(tipo='Hospitales'),
-                idm_centros[idm_centros['departamento'] == selected_depart].assign(tipo='Centros de Salud'),
-                idm_puestos[idm_puestos['departamento'] == selected_depart].assign(tipo='Puestos de Salud')
-            ])
-            
-            # Crear el line plot usando plotly
-            fig = px.line(
-                df_lineplot,
-                x="date", y="idm",
-                color="tipo",
-                labels={"idm": "IDM", "date": "Fecha"}
-            )
-    
-            # Añadir las líneas horizontales de colores
-            fig.add_hrect(y0=90, y1=100, line_width=0, fillcolor="green", opacity=0.2, annotation_text="Bien", annotation_position="top left")
-            fig.add_hrect(y0=70, y1=90, line_width=0, fillcolor="yellow", opacity=0.2, annotation_text="Regular", annotation_position="top left")
-            fig.add_hrect(y0=50, y1=70, line_width=0, fillcolor="orange", opacity=0.2, annotation_text="Mal", annotation_position="top left")
-            fig.add_hrect(y0=35, y1=50, line_width=0, fillcolor="red", opacity=0.2, annotation_text="Muy mal", annotation_position="top left")
-    
-            # Mover la leyenda a la parte inferior
-            fig.update_layout(
-                legend_title_text='Tipo de Establecimiento',
-                legend=dict(
-                    orientation="h",
-                    yanchor="top",
-                    y=-0.2,  # Ajusta la posición vertical de la leyenda
-                    xanchor="center",
-                    x=0.5
+                    margin={"r":0,"t":0,"l":0,"b":0}
                 )
-            )
-    
-            st.plotly_chart(fig, use_container_width=True)
-
-            
+        
+                st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
+                st.plotly_chart(fig, use_container_width=True)
+        
+                st.markdown('### Evolución del IDM por tipo de establecimiento')
+                df_lineplot = pd.concat([
+                    idm_hospitales[idm_hospitales['departamento'] == selected_depart].assign(tipo='Hospitales'),
+                    idm_centros[idm_centros['departamento'] == selected_depart].assign(tipo='Centros de Salud'),
+                    idm_puestos[idm_puestos['departamento'] == selected_depart].assign(tipo='Puestos de Salud')
+                ])
+                
+                # Crear el line plot usando plotly
+                fig = px.line(
+                    df_lineplot,
+                    x="date", y="idm",
+                    color="tipo",
+                    labels={"idm": "IDM", "date": "Fecha"}
+                )
+        
+                # Añadir las líneas horizontales de colores
+                fig.add_hrect(y0=90, y1=100, line_width=0, fillcolor="green", opacity=0.2, annotation_text="Bien", annotation_position="top left")
+                fig.add_hrect(y0=70, y1=90, line_width=0, fillcolor="yellow", opacity=0.2, annotation_text="Regular", annotation_position="top left")
+                fig.add_hrect(y0=50, y1=70, line_width=0, fillcolor="orange", opacity=0.2, annotation_text="Mal", annotation_position="top left")
+                fig.add_hrect(y0=35, y1=50, line_width=0, fillcolor="red", opacity=0.2, annotation_text="Muy mal", annotation_position="top left")
+        
+                # Mover la leyenda a la parte inferior
+                fig.update_layout(
+                    legend_title_text='Tipo de Establecimiento',
+                    legend=dict(
+                        orientation="h",
+                        yanchor="top",
+                        y=-0.2,  # Ajusta la posición vertical de la leyenda
+                        xanchor="center",
+                        x=0.5
+                    )
+                )
+        
+                st.plotly_chart(fig, use_container_width=True)
 
 #######################################
 
