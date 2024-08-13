@@ -189,14 +189,15 @@ else:
                             lat=initial_lat,
                             lon=initial_lon
                         ),
-                        zoom=7
+                        zoom=6
                     ),
                     margin={"r":0,"t":0,"l":0,"b":0}
                 )
         
                 st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
                 st.plotly_chart(fig, use_container_width=True)
-        
+                
+        ########## LINEPLOT
                 st.markdown('### Evolución del IDM por tipo de establecimiento')
                 df_lineplot = pd.concat([
                     idm_hospitales[idm_hospitales['departamento'] == selected_depart].assign(tipo='Hospitales'),
