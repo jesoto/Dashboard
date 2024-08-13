@@ -65,7 +65,7 @@ with st.sidebar:
     selected_depart = st.selectbox('Selecciona el departamento', depart_list)
 
 #################################
-st.navbar(selected_year)
+st.navbar([selected_year])
 # Donut chart
 def assign_color(idm_value):
     if idm_value >= 90:
