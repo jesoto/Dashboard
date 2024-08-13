@@ -40,6 +40,7 @@ ranking = load_data('data/ranking_medicamentos_desabastecidos.xlsx', columns=['d
 
 ################################
 # Sidebar
+st.navbar(selected_year)
 with st.sidebar:
     st.title('🏥💊 Disponibilidad de Medicamentos - Peru')
     with st.expander('¿Qué es el IDM?', expanded=True):
