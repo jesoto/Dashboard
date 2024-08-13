@@ -281,7 +281,7 @@ with col[2]:
     st.markdown('### Top Medicamentos desabastecidos')
     
     st.dataframe(ranking,
-                 column_order=('nombre_med_grupo'),
+                 column_order=('nombre_med_grupo','desabastecimientos'),
                  hide_index=True,
                  width=None,
                  column_config={
