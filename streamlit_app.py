@@ -107,7 +107,7 @@ def make_donut(idm_value, departamento):
                         legend=None),
     ).properties(width=130, height=130)
     
-    text = plot.mark_text(align='center', color=chart_color[0], font="Lato", fontSize=32, fontWeight=700, fontStyle="italic").encode(
+    text = plot.mark_text(align='center', color=chart_color[0], font="Lato", fontSize=31, fontWeight=700, fontStyle="italic").encode(
         text=alt.value(f'{idm_value} %')
     )
     
