@@ -211,7 +211,7 @@ else:
             folium.LayerControl().add_to(m)
 
             st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
-            st_folium(m, width=600)
+            st_folium(m, width=600, height=200)
             
             st.markdown('### Evolución del IDM por tipo de establecimiento')
             df_lineplot = pd.concat([
