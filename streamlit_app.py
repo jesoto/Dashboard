@@ -198,78 +198,7 @@ else:
             st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
             st.plotly_chart(fig, use_container_width=True)
             
-            st.markdown('### Evolución del IDM por tipo de establecimiento')
-            fig_line = px.line(idm_hospitales[idm_hospitales['departamento'] == selected_depart], x='date', y='idm', title='Evolución del IDM en Hospitales', markers=True, labels={'idm':'IDM', 'date':'Fecha'})
-            fig_line.add_scatter(x=idm_puestos['date'], y=idm_puestos['idm'], mode='lines+markers', name='Puestos de Salud')
-            fig_line.add_scatter(x=idm_centros['date'], y=idm_centros['idm'], mode='lines+markers', name='Centros de Salud')
 
-            fig_line.update_layout(
-                yaxis=dict(title='IDM'),
-                xaxis=dict(title='Fecha'),
-                legend=dict(orientation="h", yanchor="bottom", y=-0.2, xanchor="center", x=0.5),
-                shapes=[
-                    dict(
-                        type="rect",
-                        xref="paper",
-                        yref="y",
-                        x0=0,
-                        y0=90,
-                        x1=1,
-                        y1=100,
-                        fillcolor="green",
-                        opacity=0.2,
-                        layer="below",
-                        line_width=0,
-                    ),
-                                        dict(
-                        type="rect",
-                        xref="paper",
-                        yref="y",
-                        x0=0,
-                        y0=70,
-                        x1=1,
-                        y1=90,
-                        fillcolor="yellow",
-                        opacity=0.2,
-                        layer="below",
-                        line_width=0,
-                    ),
-                    dict(
-                        type="rect",
-                        xref="paper",
-                        yref="y",
-                        x0=0,
-                        y0=50,
-                        x1=1,
-                        y1=70,
-                        fillcolor="orange",
-                        opacity=0.2,
-                        layer="below",
-                        line_width=0,
-                    ),
-                    dict(
-                        type="rect",
-                        xref="paper",
-                        yref="y",
-                        x0=0,
-                        y0=40,
-                        x1=1,
-                        y1=50,
-                        fillcolor="red",
-                        opacity=0.2,
-                        layer="below",
-                        line_width=0,
-                    ),
-                ]
-            )
-
-            st.plotly_chart(fig_line, use_container_width=True)
-                    
-                    
-                    
-                    
-                    
-                    
                     
             st.markdown('### Evolución del IDM por tipo de establecimiento')
             df_lineplot = pd.concat([
