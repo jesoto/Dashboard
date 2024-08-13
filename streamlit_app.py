@@ -41,31 +41,40 @@ ranking = load_data('data/ranking_medicamentos_desabastecidos.xlsx', columns=['d
 ################################
 # Sidebar
 
-with st.sidebar:
-    st.title('🏥💊 Disponibilidad de Medicamentos - Peru')
-    with st.expander('¿Qué es el IDM?', expanded=True):
-        st.write('''
-            El **Índice de Disponibilidad de Medicamentos (IDM)** es un indicador que mide la disponibilidad de medicamentos esenciales en un sistema de salud.
-        ''')
-        st.latex(r'''
-        IDM = \frac{\text{N\degree de medicamentos disponibles}}{\text{N\degree total de medicamentos requeridos}} \times 100
-        ''')
-    year_list = [2019, 2020, 2021, 2022, 2023, 2024]
+with st.container():
+    col1, col2 = st.columns([3, 7])
+
+    with col1:
+        st.title('🏥💊 Disponibilidad de Medicamentos - Peru')
+
+    with col2:
+        with st.expander('¿Qué es el IDM?', expanded=True):
+            st.write('''
+                El **Índice de Disponibilidad de Medicamentos (IDM)** es un indicador que mide la disponibilidad de medicamentos esenciales en un sistema de salud.
+            ''')
+            st.latex(r'''
+            IDM = \frac{\text{N\degree de medicamentos disponibles}}{\text{N\degree total de medicamentos requeridos}} \times 100
+            ''')
     
-    selected_year = st.selectbox('Selecciona un año', year_list, index=len(year_list)-1)
+    col3, col4 = st.columns([3, 7])
     
-    depart_list = sorted([
-        'AMAZONAS', 'CAJAMARCA', 'AREQUIPA', 'AYACUCHO', 'APURIMAC',
-        'ANCASH', 'HUANUCO', 'ICA', 'HUANCAVELICA', 'CUSCO', 'CALLAO',
-        'UCAYALI', 'TUMBES', 'SANMARTIN', 'TACNA', 'PUNO', 'PIURA',
-        'PASCO', 'LORETO', 'MOQUEGUA', 'MADREDEDIOS', 'LIMA', 'LALIBERTAD',
-        'JUNIN', 'LAMBAYEQUE'
-    ])
+    with col3:
+        year_list = [2019, 2020, 2021, 2022, 2023, 2024]
+        selected_year = st.selectbox('Selecciona un año', year_list, index=len(year_list)-1)
     
-    selected_depart = st.selectbox('Selecciona el departamento', depart_list)
+    with col4:
+        depart_list = sorted([
+            'AMAZONAS', 'CAJAMARCA', 'AREQUIPA', 'AYACUCHO', 'APURIMAC',
+            'ANCASH', 'HUANUCO', 'ICA', 'HUANCAVELICA', 'CUSCO', 'CALLAO',
+            'UCAYALI', 'TUMBES', 'SANMARTIN', 'TACNA', 'PUNO', 'PIURA',
+            'PASCO', 'LORETO', 'MOQUEGUA', 'MADREDEDIOS', 'LIMA', 'LALIBERTAD',
+            'JUNIN', 'LAMBAYEQUE'
+        ])
+        selected_depart = st.selectbox('Selecciona el departamento', depart_list)
+
 
 #################################
-st.navbar([selected_year])
+
 # Donut chart
 def assign_color(idm_value):
     if idm_value >= 90:
