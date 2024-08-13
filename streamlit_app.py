@@ -167,11 +167,10 @@ else:
         with col[1]:
             # Filtrar datos según el año y el departamento seleccionados
             filtered_data = geo_idm[(geo_idm['año'] == selected_year) & (geo_idm['departamento'] == selected_depart)]
-
-            # Crear el mapa de Folium
-             # Crear el mapa de Plotly
+        
+            # Crear el mapa de Plotly
             fig = go.Figure()
-
+        
             for tipo in ['Hospital', 'Centro de salud', 'Puesto de Salud', 'Otro']:
                 df_tipo = filtered_data[filtered_data['tipo'] == tipo]
                 fig.add_trace(go.Scattermapbox(
@@ -179,10 +178,11 @@ else:
                     lon=df_tipo['longitud'],
                     mode='markers',
                     marker=go.scattermapbox.Marker(size=9),
-                    text=df_tipo['establec'],  # Información mostrada al pasar el mouse
+                    text=df_tipo.apply(lambda row: f"Nombre: {row['establec']}<br>IDM: {row['dispo']}%<br>Tipo: {row['tipo']}", axis=1),  # Popup content
+                    hoverinfo='text',
                     name=tipo
                 ))
-
+        
             fig.update_layout(
                 mapbox_style="carto-positron",
                 mapbox=dict(
@@ -194,7 +194,7 @@ else:
                 ),
                 margin={"r":0,"t":0,"l":0,"b":0}
             )
-
+        
             st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
             st.plotly_chart(fig, use_container_width=True)
             
