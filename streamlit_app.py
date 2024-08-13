@@ -198,7 +198,7 @@ else:
                 yanchor="top",
                 y=-0.2,  # Ajusta la posición vertical de la leyenda
                 xanchor="center",
-                x=0.5
+                x=0.2
                 ))
         
                 st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
