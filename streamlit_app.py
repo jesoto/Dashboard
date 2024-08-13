@@ -189,7 +189,7 @@ else:
                             lat=initial_lat,
                             lon=initial_lon
                         ),
-                        zoom=6
+                        zoom=6.5
                     ),
                     margin={"r":0,"t":0,"l":0,"b":0}
                 )
