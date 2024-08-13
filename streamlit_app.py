@@ -42,7 +42,7 @@ ranking = load_data('data/ranking_medicamentos_desabastecidos.xlsx', columns=['d
 # Sidebar
 
 with st.container():
-    col1, col2, col3= st.columns([3, 4,3])
+    col1, col2, col3= st.columns([3, 4,2])
 
     with col1:
         st.title('🏥💊 Disponibilidad de Medicamentos - Peru')
