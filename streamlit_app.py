@@ -149,16 +149,16 @@ else:
             idm_donut_cen_chart = make_donut(IDM_anual_cen, selected_depart)
             idm_donut_pue_chart = make_donut(IDM_anual_pue, selected_depart)
             
-            st.write('IDM Anual Total')
+            st.write('IDM Anual')
             st.altair_chart(idm_donut_total_chart, use_container_width=True)
             
-            st.write('IDM Anual Total - Hospitales')
+            st.write('IDM Anual - Hospitales')
             st.altair_chart(idm_donut_hosp_chart, use_container_width=True)
             
-            st.write('IDM Anual Total - Centros de Salud')
+            st.write('IDM Anual - Centros de Salud')
             st.altair_chart(idm_donut_cen_chart, use_container_width=True)
             
-            st.write('IDM Anual Total - Puestos de Salud')
+            st.write('IDM Anual - Puestos de Salud')
             st.altair_chart(idm_donut_pue_chart, use_container_width=True)
 
         with col[1]:
