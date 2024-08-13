@@ -196,9 +196,9 @@ else:
             legend=dict(
                 orientation="h",
                 yanchor="top",
-                y=-0.2,  # Ajusta la posición vertical de la leyenda
+                y=-0.1,  # Ajusta la posición vertical de la leyenda
                 xanchor="center",
-                x=0.2
+                x=0.5
                 ))
         
                 st.markdown('### Mapa de Disponibilidad de medicinas por establecimiento de salud')
