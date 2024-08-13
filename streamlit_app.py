@@ -40,7 +40,7 @@ ranking = load_data('data/ranking_medicamentos_desabastecidos.xlsx', columns=['d
 
 ################################
 # Sidebar
-st.navbar(selected_year)
+
 with st.sidebar:
     st.title('🏥💊 Disponibilidad de Medicamentos - Peru')
     with st.expander('¿Qué es el IDM?', expanded=True):
@@ -65,7 +65,7 @@ with st.sidebar:
     selected_depart = st.selectbox('Selecciona el departamento', depart_list)
 
 #################################
-
+st.navbar(selected_year)
 # Donut chart
 def assign_color(idm_value):
     if idm_value >= 90:
