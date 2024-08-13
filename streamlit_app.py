@@ -54,7 +54,7 @@ with st.sidebar:
        'ANCASH', 'HUANUCO', 'ICA', 'HUANCAVELICA', 'CUSCO', 'CALLAO',
        'UCAYALI', 'TUMBES', 'SANMARTIN', 'TACNA', 'PUNO', 'PIURA',
        'PASCO', 'LORETO', 'MOQUEGUA', 'MADREDEDIOS', 'LIMA', 'LALIBERTAD',
-       'JUNIN', 'LAMBAYEQUE']
+       'JUNIN', 'LAMBAYEQUE'].sort()
     
     selected_depart = st.selectbox('Selecciona el departamento', depart_list)
 
