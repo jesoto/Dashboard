@@ -122,16 +122,16 @@ else:
             idm_donut_pue_chart = make_donut(IDM_anual_pue, selected_depart)
             
             st.write('IDM Anual')
-            st.plotly_chart(idm_donut_total_chart, use_container_width=True)
+            st.altair_chart(idm_donut_total_chart, use_container_width=True)
             
             st.write('IDM Anual - Hospitales')
-            st.plotly_chart(idm_donut_hosp_chart, use_container_width=True)
+            st.altair_chart(idm_donut_hosp_chart, use_container_width=True)
             
             st.write('IDM Anual - Centros de Salud')
-            st.plotly_chart(idm_donut_cen_chart, use_container_width=True)
+            st.altair_chart(idm_donut_cen_chart, use_container_width=True)
             
             st.write('IDM Anual - Puestos de Salud')
-            st.plotly_chart(idm_donut_pue_chart, use_container_width=True)
+            st.altair_chart(idm_donut_pue_chart, use_container_width=True)
 
         with col[1]:
             # Filtrar datos según el año y el departamento seleccionados
