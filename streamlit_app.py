@@ -195,7 +195,7 @@ else:
                     legend_title_text='Tipo de Establecimiento',
             legend=dict(
                 orientation="h",
-                yanchor="top",
+                yanchor="center",
                 y=-0.05,  # Ajusta la posición vertical de la leyenda
                 xanchor="center",
                 x=0.5
