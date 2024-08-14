@@ -71,6 +71,7 @@ with st.container():
             'JUNIN', 'LAMBAYEQUE'
         ])
         selected_depart = st.selectbox('Selecciona el departamento', depart_list)
+    st.markdown("<hr style='border:1px solid #ccc;' />", unsafe_allow_html=True)
 
 
 #################################
@@ -108,7 +109,7 @@ def make_donut(idm_value, departamento):
     ).properties(width=130, height=130)
     
     text = plot.mark_text(align='center', color=chart_color[0], font="serif", fontSize=30, fontWeight=700, fontStyle="normal").encode(
-        text=alt.value(f'{idm_value} %')
+        text=alt.value(f'{idm_value}%')
     )
     
     plot_bg = alt.Chart(source_bg).mark_arc(innerRadius=45, cornerRadius=20).encode(
