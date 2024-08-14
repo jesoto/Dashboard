@@ -90,6 +90,7 @@ def assign_color(idm_value):
 def make_donut(idm_value, departamento):
     chart_color = assign_color(idm_value)
     
+    idm_value_int = int(round(idm_value))
     source = pd.DataFrame({
         "Topic": ['', departamento],
         "% value": [100 - idm_value, idm_value]
@@ -109,7 +110,7 @@ def make_donut(idm_value, departamento):
     ).properties(width=130, height=130)
     
     text = plot.mark_text(align='center', color=chart_color[0], font="serif", fontSize=30, fontWeight=700, fontStyle="normal").encode(
-        text=alt.value(f'{idm_value}%')
+        text=alt.value(f'{idm_value_int}%')
     )
     
     plot_bg = alt.Chart(source_bg).mark_arc(innerRadius=45, cornerRadius=20).encode(
